@@ -14,3 +14,5 @@ planner.o: .\STM32F10xFWLib\inc\stm32f10x_type.h
 planner.o: .\FreeRTOS\inc\queue.h
 planner.o: planner.h
 planner.o: assert.h
+planner.o: .\FreeRTOS\inc\semphr.h
+planner.o: .\FreeRTOS\inc\queue.h
