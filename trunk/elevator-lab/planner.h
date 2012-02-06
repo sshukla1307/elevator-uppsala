@@ -13,11 +13,6 @@
 #ifndef PLANNER_H
 #define PLANNER_H
 
-typedef u8 floorEventQueue_t[3];
-
-extern floorEventQueue_t floorQueue;
-
-
 void setupPlanner(unsigned portBASE_TYPE uxPriority);
 
 #endif
