@@ -15,6 +15,12 @@
 #include "FreeRTOS.h"
 #include "stm32f10x_type.h"
 #include "queue.h"
+#include "position_tracker.h"
+
+#define TRACKER_FLOOR1_POS	0
+#define TRACKER_FLOOR2_POS	399
+#define TRACKER_FLOOR3_POS	799
+#define SAFE_STOP_DISTANCE	100
 
 
 /**
@@ -69,5 +75,8 @@ void setCarTargetPosition(s32 target);
  * Emergency stop for the elevator motor
  */
 void setCarMotorStopped(u8 stopped);
+
+//returns the car's direction of movement (up, down, unknown)
+Direction getCarDirection(void);
 
 #endif

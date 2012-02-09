@@ -61,4 +61,10 @@ void setDirection(PositionTracker *tracker, Direction dir);
  */
 s32 getPosition(PositionTracker *tracker);
 
+
+/**
+ * Get the current position
+ */
+Direction getDirection(PositionTracker *tracker);
+
 #endif

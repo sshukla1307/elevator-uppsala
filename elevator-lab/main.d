@@ -25,10 +25,10 @@ main.o: .\STM32F10xFWLib\inc\stm32f10x_systick.h
 main.o: .\STM32F10xFWLib\inc\stm32f10x_usart.h
 main.o: global.h
 main.o: .\FreeRTOS\inc\queue.h
-main.o: pin_listener.h
-main.o: .\FreeRTOS\inc\queue.h
 main.o: position_tracker.h
 main.o: .\FreeRTOS\inc\semphr.h
+main.o: .\FreeRTOS\inc\queue.h
+main.o: pin_listener.h
 main.o: .\FreeRTOS\inc\queue.h
 main.o: motor.h
 main.o: .\FreeRTOS\inc\semphr.h

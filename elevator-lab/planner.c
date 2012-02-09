@@ -19,7 +19,12 @@
 #include "assert.h"
 #include "semphr.h"
 
-typedef s8 FloorEvent_t;
+typedef enum {
+	UNKNOWN = 0,
+	FLOOR1 = 1,
+	FLOOR2 = 2,
+	FLOOR3 = 3
+} FloorEvent_t;
 
 typedef struct {
 	FloorEvent_t floor[3];	 //floor where car must go
@@ -28,17 +33,76 @@ typedef struct {
 
 } floorEventQueue_t;
 
+extern xQueueHandle pinEventQueue;
 //structure holding floor request events
 floorEventQueue_t floorQueue;
 
-//checks if it is possible to stop at the given floor on the way
-static bool floorInTheWay(FloorEvent_t floor);
+//pull a floor request event from the queue
+static FloorEvent_t getFloorEvent(void);
+//insert a floor request event into the queue
+static void pushFloorEvent(FloorEvent_t floor);
+//checks if it is possible to stop at floor 2 on the way to floor 1 or 3
+static bool floor2InTheWay(void);
 
 static void plannerTask(void *params) {
 
-  // ...
+	PinEvent ev;
+	FloorEvent_t floor;
 
-  vTaskDelay(portMAX_DELAY);
+	portTickType xLastWakeTime;
+	// Initialise the xLastWakeTime variable with the current time.
+	xLastWakeTime = xTaskGetTickCount();
+
+	for(;;) {
+		while (xQueueReceive(pinEventQueue, &ev, portMAX_DELAY) == pdTRUE) {
+			switch(ev) {
+
+				case TO_FLOOR_1:
+					pushFloorEvent(FLOOR1);
+					break;	
+
+				case TO_FLOOR_2:
+					pushFloorEvent(FLOOR2);
+					break;
+
+				case TO_FLOOR_3:
+					pushFloorEvent(FLOOR3);
+					break;					 
+				
+				case ARRIVED_AT_FLOOR:
+					break;
+					
+				case LEFT_FLOOR:
+					break;
+
+				case DOORS_CLOSED:
+					break;
+
+				case DOORS_OPENING:
+					break;
+
+				case STOP_PRESSED:
+					break;
+
+				case STOP_RELEASED:
+					break;
+
+				default:
+					break;
+
+			}
+		}
+	
+		floor = getFloorEvent();
+
+		if (floor != UNKNOWN) {
+
+		}
+
+		//TODO:
+
+		vTaskDelayUntil(&xLastWakeTime, 100 / portTICK_RATE_MS);
+	}
 
 }
 
@@ -47,13 +111,29 @@ void setupPlanner(unsigned portBASE_TYPE uxPriority) {
 
 	//init floorQueue
 	for (i=0;i<3;i++) {
-		floorQueue.floor[i] = 0;
+		floorQueue.floor[i] = UNKNOWN;
 	}
 	floorQueue.lock = xSemaphoreCreateMutex();
 
   xTaskCreate(plannerTask, "planner", 100, NULL, uxPriority, NULL);
 }
 
+//pull a floor request event from the queue
+FloorEvent_t getFloorEvent(void) {
+	FloorEvent_t floor;
+
+	xSemaphoreTake(floorQueue.lock, portMAX_DELAY);
+
+	//get the first element in the queue
+	floor = floorQueue.floor[0];
+	//shift queue to the left by 1 position
+	floorQueue.floor[0] = floorQueue.floor[1];
+	floorQueue.floor[1] = floorQueue.floor[2];
+
+	xSemaphoreGive(floorQueue.lock);
+
+	return floor;
+}
 
 //insert a floor request event into the queue
 void pushFloorEvent(FloorEvent_t floor) {
@@ -70,9 +150,9 @@ void pushFloorEvent(FloorEvent_t floor) {
 	}	
 	
 	//if the requested floor is the middle one	
-	if (floor == 2) {
+	if (floor == FLOOR2) {
 		//if it is possible to stop on the way
-		if (floorInTheWay(floor)) {
+		if (floor2InTheWay()) {
 			//stop to the floor - insert floor at the beginning of 	queue
 			floorQueue.floor[2] = floorQueue.floor[1];
 			floorQueue.floor[1] = floorQueue.floor[0];
@@ -80,9 +160,9 @@ void pushFloorEvent(FloorEvent_t floor) {
 		}
 	} else {
 		//insert floor at the end of the queue
-		//queue doesn't need to be sorted since we only ave 3 floors 
+		//queue doesn't need to be sorted since we only have 3 floors 
 		for (i=0;i<3;i++) {
-			if (floorQueue.floor[i] == 0) {
+			if (floorQueue.floor[i] == UNKNOWN) {
 				floorQueue.floor[i] = floor;
 				break;	
 			}	
@@ -92,9 +172,17 @@ void pushFloorEvent(FloorEvent_t floor) {
 	xSemaphoreGive(floorQueue.lock);
 }
 
-bool floorInTheWay(FloorEvent_t floor) {
-	
+bool floor2InTheWay() {
 
+	s32 position = getCarPosition();
+	Direction dir = getCarDirection();
+	
+	//if going up and can stop safely
+	if (((dir == Up) && (position + SAFE_STOP_DISTANCE <= TRACKER_FLOOR2_POS)) ||
+	//if going down and can stop safely
+		 ((dir == Down) && (position - SAFE_STOP_DISTANCE >= TRACKER_FLOOR2_POS)))	{
+		return TRUE;
+	}
 	return FALSE;
 }
 

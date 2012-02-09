@@ -17,4 +17,7 @@ pin_listener.o: .\STM32F10xFWLib\inc\stm32f10x_type.h
 pin_listener.o: .\STM32F10xFWLib\inc\cortexm3_macro.h
 pin_listener.o: global.h
 pin_listener.o: .\FreeRTOS\inc\queue.h
+pin_listener.o: position_tracker.h
+pin_listener.o: .\FreeRTOS\inc\semphr.h
+pin_listener.o: .\FreeRTOS\inc\queue.h
 pin_listener.o: assert.h
