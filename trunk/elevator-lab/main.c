@@ -140,6 +140,10 @@ void setCarMotorStopped(u8 stopped) {
   setMotorStopped(&carMotor, stopped);
 }
 
+Direction getCarDirection() {
+  return getDirection(&carPositionTracker);
+}
+
 /*-----------------------------------------------------------*/
 
 /*

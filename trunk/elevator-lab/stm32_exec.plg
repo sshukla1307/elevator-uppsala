@@ -3,221 +3,374 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-D:\DATE\Master\pes\ELEVATOR\trunk\elevator-lab\lab_env.uvproj
-Project File Date:  02/05/2012
+D:\DATE\Master\pes\elev\trunk\elevator-lab\lab_env.uvproj
+Project File Date:  02/09/2012
 
 <h2>Output:</h2>
 Build target 'Target 1'
+assembling STM32F10x.s...
+compiling stm32f10x_gpio.c...
+compiling stm32f10x_lib.c...
+compiling stm32f10x_nvic.c...
+compiling stm32f10x_rcc.c...
+compiling stm32f10x_spi.c...
+compiling stm32f10x_systick.c...
+compiling stm32f10x_tim.c...
+compiling stm32f10x_usart.c...
+assembling cortexm3_macro_rvds.s...
+compiling main.c...
+compiling setup.c...
+compiling pin_listener.c...
+compiling position_tracker.c...
+position_tracker.c(40): error:  #20: identifier "TRACKER_MIN_POS" is undefined
+compiling motor.c...
+compiling planner.c...
+compiling safety.c...
+compiling heap_2.c...
+compiling list.c...
+compiling port.c...
+compiling queue.c...
+compiling tasks.c...
+compiling serial.c...
+Target not created
+Build target 'Target 1'
+compiling main.c...
+position_tracker.h(21): error:  #77-D: this declaration has no storage class or type specifier
+position_tracker.h(21): error:  #65: expected a ";"
+position_tracker.h(26): warning:  #12-D: parsing restarts here after previous syntax error
+position_tracker.h(40): error:  #20: identifier "Direction" is undefined
+position_tracker.h(60): error:  #20: identifier "Direction" is undefined
+compiling position_tracker.c...
+position_tracker.h(21): error:  #77-D: this declaration has no storage class or type specifier
+position_tracker.h(21): error:  #65: expected a ";"
+position_tracker.h(26): warning:  #12-D: parsing restarts here after previous syntax error
+position_tracker.h(40): error:  #20: identifier "Direction" is undefined
+position_tracker.h(60): error:  #20: identifier "Direction" is undefined
+position_tracker.c(37): error:  #20: identifier "Up" is undefined
+position_tracker.c(38): error:  #20: identifier "TRACKER_MAX_POS" is undefined
+position_tracker.c(45): error:  #20: identifier "Down" is undefined
+position_tracker.c(81): error:  #20: identifier "Unknown" is undefined
+position_tracker.c(91): error:  #20: identifier "Direction" is undefined
+compiling motor.c...
+position_tracker.h(21): error:  #77-D: this declaration has no storage class or type specifier
+position_tracker.h(21): error:  #65: expected a ";"
+position_tracker.h(26): warning:  #12-D: parsing restarts here after previous syntax error
+position_tracker.h(40): error:  #20: identifier "Direction" is undefined
+position_tracker.h(60): error:  #20: identifier "Direction" is undefined
+motor.c(110): error:  #20: identifier "Up" is undefined
+motor.c(118): error:  #20: identifier "Down" is undefined
+motor.c(126): error:  #20: identifier "Unknown" is undefined
+Target not created
+Build target 'Target 1'
+compiling main.c...
+position_tracker.h(22): warning:  #47-D: incompatible redefinition of macro "TRACKER_MIN_POS" (declared at line 21)
+compiling position_tracker.c...
+position_tracker.h(22): warning:  #47-D: incompatible redefinition of macro "TRACKER_MIN_POS" (declared at line 21)
+position_tracker.c(38): error:  #20: identifier "TRACKER_MAX_POS" is undefined
+compiling motor.c...
+position_tracker.h(22): warning:  #47-D: incompatible redefinition of macro "TRACKER_MIN_POS" (declared at line 21)
+Target not created
+Build target 'Target 1'
+compiling position_tracker.c...
+position_tracker.h(22): warning:  #47-D: incompatible redefinition of macro "TRACKER_MIN_POS" (declared at line 21)
+position_tracker.c(38): error:  #20: identifier "TRACKER_MAX_POS" is undefined
+Target not created
+Build target 'Target 1'
+compiling main.c...
+compiling position_tracker.c...
+compiling motor.c...
+linking...
+Program Size: Code=14004 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+compiling position_tracker.c...
+compiling motor.c...
+linking...
+Program Size: Code=14004 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+compiling position_tracker.c...
+compiling planner.c...
+planner.c(35): error:  #20: identifier "PositionTracker" is undefined
+planner.c(78): warning:  #223-D: function "floor2InTheWay" declared implicitly
+planner.c(98): error:  #159: declaration is incompatible with previous "floor2InTheWay" (declared at line 78)
+planner.c(102): error:  #29: expected an expression
+planner.c(103): error:  #18: expected a ")"
+planner.c(103): error:  #127: expected a statement
+planner.c(103): warning:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+planner.c(38): warning:  #177-D: function "floorInTheWay" was declared but never referenced
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(80): warning:  #223-D: function "floor2InTheWay" declared implicitly
+planner.c(100): error:  #159: declaration is incompatible with previous "floor2InTheWay" (declared at line 80)
+planner.c(104): error:  #29: expected an expression
+planner.c(105): error:  #18: expected a ")"
+planner.c(105): error:  #127: expected a statement
+planner.c(105): warning:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+planner.c(40): warning:  #177-D: function "floorInTheWay" was declared but never referenced
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(40): warning:  #1295-D: Deprecated declaration floor2InTheWay - give arg types
+planner.c(104): error:  #29: expected an expression
+planner.c(105): error:  #18: expected a ")"
+planner.c(105): error:  #127: expected a statement
+planner.c(105): warning:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(104): error:  #29: expected an expression
+planner.c(105): error:  #18: expected a ")"
+planner.c(105): error:  #127: expected a statement
+planner.c(105): warning:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+Target not created
+Build target 'Target 1'
+compiling main.c...
+compiling position_tracker.c...
+compiling motor.c...
+compiling planner.c...
+planner.c(103): error:  #29: expected an expression
+planner.c(104): error:  #18: expected a ")"
+planner.c(104): error:  #127: expected a statement
+planner.c(104): warning:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+Target not created
+Build target 'Target 1'
+compiling main.c...
+global.h(74): error:  #20: identifier "Direction" is undefined
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+compiling pin_listener.c...
+global.h(74): error:  #20: identifier "Direction" is undefined
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+compiling planner.c...
+global.h(74): error:  #20: identifier "Direction" is undefined
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+planner.c(98): error:  #20: identifier "Direction" is undefined
+planner.c(98): error:  #20: identifier "getC" is undefined
+planner.c(100): error:  #65: expected a ";"
+planner.c(105): warning: At end of source:  #12-D: parsing restarts here after previous syntax error
+planner.c(105): warning: At end of source:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+planner.c(105): error: At end of source:  #67: expected a "}"
+compiling safety.c...
+global.h(74): error:  #20: identifier "Direction" is undefined
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+Target not created
+Build target 'Target 1'
+compiling main.c...
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+compiling pin_listener.c...
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+compiling planner.c...
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+planner.c(98): error:  #20: identifier "getC" is undefined
+planner.c(100): error:  #65: expected a ";"
+planner.c(105): warning: At end of source:  #12-D: parsing restarts here after previous syntax error
+planner.c(105): warning: At end of source:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+planner.c(105): error: At end of source:  #67: expected a "}"
+compiling safety.c...
+global.h(74): warning:  #1295-D: Deprecated declaration getCarDirection - give arg types
+Target not created
+Build target 'Target 1'
 compiling main.c...
 compiling pin_listener.c...
 compiling planner.c...
-planner.c(22): error:  #65: expected a ";"
-planner.c(24): error:  #20: identifier "xSemaphoreHandle" is undefined
-planner.c(27): error:  #20: identifier "floorEventQueue_t" is undefined
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(20): error:  #5: cannot open source input file "semaphore.h": No such file or directory
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(20): error:  #5: cannot open source input file "smphr.h": No such file or directory
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(20): error:  #5: cannot open source input file "smphre.h": No such file or directory
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(24): error:  #65: expected a ";"
-planner.c(29): error:  #20: identifier "floorEventQueue_t" is undefined
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(24): error:  #65: expected a ";"
+planner.c(98): error:  #20: identifier "getC" is undefined
+planner.c(100): error:  #65: expected a ";"
+planner.c(105): warning: At end of source:  #12-D: parsing restarts here after previous syntax error
+planner.c(105): warning: At end of source:  #940-D: missing return statement at end of non-void function "floor2InTheWay"
+planner.c(105): error: At end of source:  #67: expected a "}"
+compiling safety.c...
 Target not created
 Build target 'Target 1'
 compiling planner.c...
 linking...
-Program Size: Code=13672 RO-data=304 RW-data=200 ZI-data=18176  
+Program Size: Code=14076 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+compiling pin_listener.c...
+compiling position_tracker.c...
+position_tracker.c(40): error:  #20: identifier "TRACKER_FLOOR3_POS" is undefined
+position_tracker.c(47): error:  #20: identifier "TRACKER_FLOOR2_POS" is undefined
+position_tracker.c(59): error:  #20: identifier "TRACKER_FLOOR1_POS" is undefined
+position_tracker.c(66): error:  #20: identifier "TRACKER_FLOOR2_POS" is undefined
+compiling motor.c...
+compiling planner.c...
+compiling safety.c...
+Target not created
+Build target 'Target 1'
+compiling position_tracker.c...
+compiling planner.c...
+linking...
+Program Size: Code=14108 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling motor.c...
+compiling planner.c...
+planner.c(44): error:  #20: identifier "xLastWakeTime" is undefined
+planner.c(44): error:  #20: identifier "listeners" is undefined
+planner.c(47): warning:  #111-D: statement is unreachable
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(44): error:  #20: identifier "xLastWakeTime" is undefined
+planner.c(47): warning:  #111-D: statement is unreachable
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(40): error:  #20: identifier "xLastWakeTime" is undefined
+planner.c(49): warning:  #111-D: statement is unreachable
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(50): warning:  #111-D: statement is unreachable
+linking...
+Program Size: Code=14112 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+compiling motor.c...
+motor.h(29): error:  #20: identifier "PositionTracker" is undefined
+motor.h(42): error:  #20: identifier "PositionTracker" is undefined
+motor.c(90): warning:  #223-D: function "getPosition" declared implicitly
+motor.c(109): warning:  #223-D: function "setDirection" declared implicitly
+motor.c(109): error:  #20: identifier "Up" is undefined
+motor.c(117): warning:  #223-D: function "setDirection" declared implicitly
+motor.c(117): error:  #20: identifier "Down" is undefined
+motor.c(125): warning:  #223-D: function "setDirection" declared implicitly
+motor.c(125): error:  #20: identifier "Unknown" is undefined
+motor.c(136): error:  #20: identifier "PositionTracker" is undefined
+Target not created
+Build target 'Target 1'
+compiling main.c...
+compiling motor.c...
+linking...
+Program Size: Code=14112 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling motor.c...
+compiling planner.c...
+linking...
+Program Size: Code=14132 RO-data=304 RW-data=212 ZI-data=18172  
 "stm32_exec.axf" - 0 Error(s), 0 Warning(s).
 Build target 'Target 1'
 compiling planner.c...
-planner.c(24): error:  #65: expected a ";"
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(24): error:  #65: expected a ";"
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(24): error:  #65: expected a ";"
-planner.c(25): error:  #65: expected a ";"
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(25): error:  #65: expected a ";"
-planner.c(26): error:  #65: expected a ";"
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(41): error:  #29: expected an expression
-planner.c(41): error:  #137: expression must be a modifiable lvalue
-planner.c(42): warning:  #223-D: function "xSemaphoreCreate" declared implicitly
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(41): error:  #29: expected an expression
-planner.c(41): error:  #137: expression must be a modifiable lvalue
-planner.c(42): warning:  #223-D: function "xSemaphoreCreate" declared implicitly
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(41): error:  #29: expected an expression
-planner.c(41): error:  #137: expression must be a modifiable lvalue
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(41): error:  #29: expected an expression
-planner.c(41): error:  #29: expected an expression
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(41): warning:  #223-D: function "memset" declared implicitly
 linking...
-Program Size: Code=13692 RO-data=304 RW-data=208 ZI-data=18176  
+Program Size: Code=14136 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+planner.c(69): warning:  #188-D: enumerated type mixed with another type
+linking...
+Program Size: Code=14136 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+planner.c(69): warning:  #188-D: enumerated type mixed with another type
+planner.c(104): error:  #20: identifier "UNKNOWN" is undefined
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(69): error:  #20: identifier "UNKNOWN" is undefined
+planner.c(104): error:  #20: identifier "UNKNOWN" is undefined
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(70): error:  #20: identifier "UNKNOWN" is undefined
+planner.c(105): error:  #20: identifier "UNKNOWN" is undefined
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+linking...
+Program Size: Code=14136 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+planner.c(46): warning:  #177-D: variable "ev" was declared but never referenced
+linking...
+Program Size: Code=14112 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+main.c(163): error:  #31: expression must have integral type
+main.c(164): error:  #31: expression must have integral type
+main.c(165): error:  #31: expression must have integral type
+main.c(166): error:  #31: expression must have integral type
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(163): error:  #268: declaration may not appear after executable statement in block
+main.c(163): error:  #144: a value of type "char *" cannot be used to initialize an entity of type "char"
+main.c(165): error:  #31: expression must have integral type
+main.c(166): error:  #31: expression must have integral type
+main.c(167): error:  #31: expression must have integral type
+Target not created
+Build target 'Target 1'
+compiling main.c...
+main.c(163): error:  #268: declaration may not appear after executable statement in block
+main.c(165): error:  #31: expression must have integral type
+main.c(166): error:  #31: expression must have integral type
+main.c(167): error:  #31: expression must have integral type
+Target not created
+Build target 'Target 1'
+compiling main.c...
+linking...
+Program Size: Code=14168 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling main.c...
+compiling planner.c...
+planner.c(56): warning:  #223-D: function "pushFloorEvent" declared implicitly
+planner.c(92): error:  #159: declaration is incompatible with previous "pushFloorEvent" (declared at line 56)
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+planner.c(56): warning:  #223-D: function "pushFloorEvent" declared implicitly
+planner.c(92): error:  #159: declaration is incompatible with previous "pushFloorEvent" (declared at line 56)
+Target not created
+Build target 'Target 1'
+compiling planner.c...
+linking...
+Program Size: Code=14180 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+linking...
+Program Size: Code=14180 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+linking...
+Program Size: Code=14200 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+linking...
+Program Size: Code=14248 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+planner.c(117): warning:  #177-D: function "getFloorEvent" was declared but never referenced
+linking...
+Program Size: Code=14248 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 1 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+planner.c(50): warning:  #177-D: variable "floor" was declared but never referenced
+planner.c(118): warning:  #177-D: function "getFloorEvent" was declared but never referenced
+linking...
+Program Size: Code=14248 RO-data=304 RW-data=212 ZI-data=18172  
+"stm32_exec.axf" - 0 Error(s), 2 Warning(s).
+Build target 'Target 1'
+compiling planner.c...
+planner.c(50): warning:  #550-D: variable "floor" was set but never used
+linking...
+Program Size: Code=14252 RO-data=304 RW-data=212 ZI-data=18172  
 "stm32_exec.axf" - 0 Error(s), 1 Warning(s).
 Build target 'Target 1'
 compiling planner.c...
 linking...
-Program Size: Code=13700 RO-data=304 RW-data=208 ZI-data=18176  
-"stm32_exec.axf" - 0 Error(s), 0 Warning(s).
-Build target 'Target 1'
-compiling planner.c...
-planner.c(59): error:  #137: expression must be a modifiable lvalue
-planner.c(60): error:  #55: too many arguments in macro invocation
-planner.c(66): warning:  #223-D: function "floorInTheWay" declared implicitly
-planner.c(80): error:  #55: too many arguments in macro invocation
-planner.c(81): warning:  #1-D: last line of file ends without a newline
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(59): error:  #42: operand types are incompatible ("FloorEvent_t *" and "FloorEvent_t")
-planner.c(60): error:  #55: too many arguments in macro invocation
-planner.c(66): warning:  #223-D: function "floorInTheWay" declared implicitly
-planner.c(80): error:  #55: too many arguments in macro invocation
-planner.c(81): warning:  #1-D: last line of file ends without a newline
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(59): error:  #42: operand types are incompatible ("FloorEvent_t *" and "FloorEvent_t")
-planner.c(66): warning:  #223-D: function "floorInTheWay" declared implicitly
-planner.c(81): warning:  #1-D: last line of file ends without a newline
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(59): error:  #42: operand types are incompatible ("FloorEvent_t *" and "FloorEvent_t")
-planner.c(66): warning:  #223-D: function "floorInTheWay" declared implicitly
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(66): warning:  #223-D: function "floorInTheWay" declared implicitly
-linking...
-stm32_exec.axf: Error: L6218E: Undefined symbol floorInTheWay (referred from planner.o).
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(55): error:  #84: invalid combination of type specifiers
-planner.c(68): warning:  #223-D: function "floorInTheWay" declared implicitly
-Target not created
-Build target 'Target 1'
-compiling main.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling pin_listener.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling planner.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-planner.c(66): warning:  #223-D: function "floorInTheWay" declared implicitly
-compiling safety.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-Target not created
-Build target 'Target 1'
-compiling main.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling pin_listener.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling planner.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-planner.c(66): warning:  #223-D: function "floorInTheWay" declared implicitly
-compiling safety.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-Target not created
-Build target 'Target 1'
-compiling main.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling pin_listener.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling planner.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-planner.c(67): warning:  #223-D: function "floorInTheWay" declared implicitly
-compiling safety.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-Target not created
-Build target 'Target 1'
-compiling main.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling pin_listener.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-compiling planner.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-planner.c(68): warning:  #223-D: function "floorInTheWay" declared implicitly
-planner.c(85): error:  #20: identifier "floorEvent" is undefined
-planner.c(85): error:  #159: declaration is incompatible with previous "floorInTheWay" (declared at line 68)
-planner.c(87): warning:  #188-D: enumerated type mixed with another type
-planner.c(88): warning:  #1-D: last line of file ends without a newline
-compiling safety.c...
-global.h(20): error:  #101: "TRUE" has already been declared in the current scope
-global.h(20): error:  #101: "FALSE" has already been declared in the current scope
-Target not created
-Build target 'Target 1'
-compiling main.c...
-compiling pin_listener.c...
-compiling planner.c...
-planner.c(68): warning:  #223-D: function "floorInTheWay" declared implicitly
-planner.c(85): error:  #20: identifier "floorEvent" is undefined
-planner.c(85): error:  #159: declaration is incompatible with previous "floorInTheWay" (declared at line 68)
-planner.c(88): warning:  #1-D: last line of file ends without a newline
-compiling safety.c...
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(68): warning:  #223-D: function "floorInTheWay" declared implicitly
-planner.c(85): error:  #159: declaration is incompatible with previous "floorInTheWay" (declared at line 68)
-planner.c(88): warning:  #1-D: last line of file ends without a newline
-Target not created
-Build target 'Target 1'
-compiling planner.c...
-planner.c(90): warning:  #1-D: last line of file ends without a newline
-linking...
-Program Size: Code=13836 RO-data=304 RW-data=208 ZI-data=18176  
-"stm32_exec.axf" - 0 Error(s), 1 Warning(s).
-Build target 'Target 1'
-compiling planner.c...
-linking...
-Program Size: Code=13836 RO-data=304 RW-data=208 ZI-data=18176  
+Program Size: Code=14252 RO-data=304 RW-data=212 ZI-data=18172  
 "stm32_exec.axf" - 0 Error(s), 0 Warning(s).

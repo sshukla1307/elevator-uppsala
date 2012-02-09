@@ -17,4 +17,7 @@ safety.o: .\STM32F10xFWLib\inc\stm32f10x_gpio.h
 safety.o: C:\Keil\ARM\RV31\Inc\stdio.h
 safety.o: global.h
 safety.o: .\FreeRTOS\inc\queue.h
+safety.o: position_tracker.h
+safety.o: .\FreeRTOS\inc\semphr.h
+safety.o: .\FreeRTOS\inc\queue.h
 safety.o: assert.h
