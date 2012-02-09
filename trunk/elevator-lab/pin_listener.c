@@ -18,7 +18,50 @@
 static void pollPin(PinListener *listener,
                     xQueueHandle pinEventQueue) {
 
-  // ...
+  static u8 debounce_cnt[9];
+  u8 data;
+
+
+  //read GPIO Pin every 10 ms
+  data = GPIO_ReadInputDataBit( listener->gpio, listener->pin );
+  
+  switch (listener->status) {
+    case 0: // released
+      if( data == 1 )
+        if( debounce_cnt[listener->pin] < 2 ) 
+        {
+          debounce_cnt[listener->pin]++;
+        }
+        else
+        {
+          listener->status = 1;  //go to pressed state
+          debounce_cnt[listener->pin] = 0; //reset counter
+          xQueueSend(pinEventQueue, &listener->risingEvent, portMAX_DELAY);
+        }
+      break;
+
+    case 1: // pressed
+      if ( data == 0 )
+      {
+        if( debounce_cnt[listener->pin] < 2 ) 
+        {
+          debounce_cnt[listener->pin]++;
+        }
+        else
+        {
+          listener->status = 0;  //go to pressed state
+          debounce_cnt[listener->pin] = 0; //reset counter
+          
+          if( listener->pin > 2 ) // ignore butons falling edge event
+            xQueueSend(pinEventQueue, &listener->fallingEvent, portMAX_DELAY);
+        }
+      }
+      break;
+
+    default:
+      break;
+
+  }
 
 }
 
