@@ -27,20 +27,22 @@ static void positionTrackerTask(void *params) {
 
 	for (;;) {
 
-		if ((GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_9)) && (pulseHigh == FALSE)) {
+		if ( GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_9)) {
 
-			//new pulse detected
-			pulseHigh = TRUE;
-
-		  xSemaphoreTake(tracker->lock, portMAX_DELAY);
-
-			if (tracker->direction == Up)
-        tracker->position++;
-      else if( tracker->direction == Down )
-        tracker->position--;
-      else ;  //do nothing
-
-			xSemaphoreGive(tracker->lock);
+      if(pulseHigh == FALSE) {
+  			//new pulse detected
+  			pulseHigh = TRUE;
+  
+  		  xSemaphoreTake(tracker->lock, portMAX_DELAY);
+  
+  			if (tracker->direction == Up)
+          tracker->position++;
+        else if( tracker->direction == Down )
+          tracker->position--;
+        else ;  //do nothing
+  
+  			xSemaphoreGive(tracker->lock);
+      }
 		}
     else
       pulseHigh = FALSE; //reset pulse flag, wait for new pulse

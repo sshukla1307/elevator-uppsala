@@ -23,7 +23,7 @@
 // Constant acceleration
 #define MAX_DUTY          10000	  // The motor output is specified as
                                   // an integer between 0 and MAX_DUTY
-#define ACCEL_TIME        500     // time to go from zero to full speed
+#define ACCEL_TIME        5//500     // time to go from zero to full speed
 
 // De-acceleration: speed is changed proportional to the distance
 //                  from the target
