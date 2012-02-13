@@ -18,9 +18,9 @@
 #include "position_tracker.h"
 
 #define TRACKER_FLOOR1_POS	0
-#define TRACKER_FLOOR2_POS	39 //399
-#define TRACKER_FLOOR3_POS	79 //799
-#define SAFE_STOP_DISTANCE	10 //100
+#define TRACKER_FLOOR2_POS	10 //400
+#define TRACKER_FLOOR3_POS	20 //800
+#define SAFE_STOP_DISTANCE	2 //100
 
 
 /**

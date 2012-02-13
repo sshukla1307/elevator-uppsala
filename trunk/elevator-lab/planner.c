@@ -48,7 +48,7 @@ static FloorEvent_t readFloorEvent(void);
 static void plannerTask(void *params) {
 
 	PinEvent ev;
-	FloorEvent_t targetfloor, currentfloor;
+	FloorEvent_t targetfloor = FLOOR1, currentfloor = FLOOR1;
   bool floorreached, doors_closed;
 
 	portTickType xLastWakeTime;
@@ -58,23 +58,25 @@ static void plannerTask(void *params) {
 
 	for(;;) {    
 
-		if(xQueueReceive(pinEventQueue, &ev, portMAX_DELAY) == pdTRUE) {
+    // check event queue for new event
+		if(xQueueReceive(pinEventQueue, &ev, (portTickType)0 ) == pdTRUE) {
 			switch(ev) {
 
 				case TO_FLOOR_1:
-					pushFloorEvent(FLOOR1);
-          //setCarTargetPosition(TRACKER_FLOOR1_POS);
+          // check current floor
+          if( currentfloor != FLOOR1) 
+					  pushFloorEvent(FLOOR1);    // set the floor request only if it isn't the current floor
 					break;	
 
 				case TO_FLOOR_2:
-					pushFloorEvent(FLOOR2);
-          //setCarTargetPosition(TRACKER_FLOOR2_POS);
+          if( currentfloor != FLOOR2)
+  					pushFloorEvent(FLOOR2);    // set the floor request only if it isn't the current floor
 					break;
 
 				case TO_FLOOR_3:
-					pushFloorEvent(FLOOR3);
-          //setCarTargetPosition(TRACKER_FLOOR3_POS);
-					break;					 
+          if( currentfloor != FLOOR3)
+					  pushFloorEvent(FLOOR3);    // set the floor request only if it isn't the current floor
+          break;					 
 				
 				case ARRIVED_AT_FLOOR:
             floorreached = TRUE;
@@ -106,11 +108,13 @@ static void plannerTask(void *params) {
 			}
 		}
 
-    /* lift  */
+    /* only set the target when doors are closed  */
     if( doors_closed )
     {
+      // read new target floor
       targetfloor = readFloorEvent();
     
+      // set target position accordingly
       switch(targetfloor)
       {
         case FLOOR1:
@@ -128,20 +132,14 @@ static void plannerTask(void *params) {
       }
     }
 
-    //position = getCarPosition();
-    if( floorreached && !doors_closed )
+    // test if lift reached the target floor and pop the request from the queue
+    if(( floorreached && !doors_closed ) && ( targetfloor != currentfloor ))
     {
+       // set the new current floor
        currentfloor = getFloorEvent();
     }
-    
 
-
-		if (targetfloor != UNKNOWN) {
-		}
-
-		//TODO:
-
-		vTaskDelayUntil(&xLastWakeTime, 100 / portTICK_RATE_MS);
+		vTaskDelayUntil(&xLastWakeTime, 10 / portTICK_RATE_MS);
 	}
 
 }
@@ -153,7 +151,6 @@ void setupPlanner(unsigned portBASE_TYPE uxPriority) {
 	for (i=0;i<3;i++) {
 		floorQueue.floor[i] = UNKNOWN;
 	}
-	floorQueue.lock = xSemaphoreCreateMutex();
 
   xTaskCreate(plannerTask, "planner", 100, NULL, uxPriority, NULL);
 }
@@ -161,12 +158,9 @@ void setupPlanner(unsigned portBASE_TYPE uxPriority) {
 FloorEvent_t readFloorEvent(void) {
 	FloorEvent_t floor;
 
-	xSemaphoreTake(floorQueue.lock, portMAX_DELAY);
-
 	//get the first element in the queue
-	floor = floorQueue.floor[0];
-
-	xSemaphoreGive(floorQueue.lock);
+  if( floorQueue.floor[0] != UNKNOWN )
+	  floor = floorQueue.floor[0];
 
 	return floor;
 }
@@ -175,15 +169,12 @@ FloorEvent_t readFloorEvent(void) {
 FloorEvent_t getFloorEvent(void) {
 	FloorEvent_t floor;
 
-	xSemaphoreTake(floorQueue.lock, portMAX_DELAY);
-
 	//get the first element in the queue
 	floor = floorQueue.floor[0];
 	//shift queue to the left by 1 position
 	floorQueue.floor[0] = floorQueue.floor[1];
 	floorQueue.floor[1] = floorQueue.floor[2];
-
-	xSemaphoreGive(floorQueue.lock);
+  floorQueue.floor[2] = UNKNOWN;
 
 	return floor;
 }
@@ -193,12 +184,9 @@ void pushFloorEvent(FloorEvent_t floor) {
 	u8 i;
   Direction dir = getCarDirection();
 	
-	xSemaphoreTake(floorQueue.lock, portMAX_DELAY);	
-	
 	//if the event is already in the queue we don't need to push it again
 	for (i=0;i<3;i++) {
 		if (floorQueue.floor[i] == floor) {
-			xSemaphoreGive(floorQueue.lock);
 			return;
 		}
 	}	
@@ -222,8 +210,6 @@ void pushFloorEvent(FloorEvent_t floor) {
 			}	
 		}
 	}
-
-	xSemaphoreGive(floorQueue.lock);
 }
 
 bool floor2InTheWay() {
