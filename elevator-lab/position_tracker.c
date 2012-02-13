@@ -27,66 +27,27 @@ static void positionTrackerTask(void *params) {
 
 	for (;;) {
 
-		if (GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_9)) {
-			if (pulseHigh == FALSE) {
+		if ((GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_9)) && (pulseHigh == FALSE)) {
 
-				//new pulse detected
-				pulseHigh = TRUE;
+			//new pulse detected
+			pulseHigh = TRUE;
 
-			  xSemaphoreTake(tracker->lock, portMAX_DELAY);
+		  xSemaphoreTake(tracker->lock, portMAX_DELAY);
 
-				if (tracker->direction == Up) {
+			if (tracker->direction == Up)
+        tracker->position++;
+      else if( tracker->direction == Down )
+        tracker->position--;
+      else ;  //do nothing
 
-					if (tracker->position + 1 <= TRACKER_FLOOR3_POS) {
-						tracker->position++;
-						
-						if (tracker->position == TRACKER_FLOOR3_POS) {
-
-							//TODO: code for reporting elevator at floor 3
-
-						}	else if (tracker->position == TRACKER_FLOOR2_POS) {
-
-							//TODO: code for reporting elevator at floor 2
-
-						}
-					} else {
-
-						//TODO: code for position out of bounds (upper)
-
-					} 	
-				} else if (tracker->direction == Down) {
-
-					if (tracker->position - 1 >= TRACKER_FLOOR1_POS) {
-						tracker->position--;
-
-						if (tracker->position == TRACKER_FLOOR1_POS) {
-
-							//TODO: code for reporting elevator at floor 1
-
-						}	else if (tracker->position == TRACKER_FLOOR2_POS) {
-
-							//TODO: code for reporting elevator at floor 2
-
-						}
-					}	else {
-
-						 //TODO: code for position out of bounds (lower)
-
-					}
-
-				}	else {
-				
-					//TODO: code to report unknown direction error
-
-				}
-
-				xSemaphoreGive(tracker->lock);
-			}
+			xSemaphoreGive(tracker->lock);
 		}
+    else
+      pulseHigh = FALSE; //reset pulse flag, wait for new pulse
 
-		//delay for 3 ms since started
-		vTaskDelayUntil(&xLastWakeTime, tracker->pollingPeriod);
-	}
+  	//delay for 3 ms since started
+  	vTaskDelayUntil(&xLastWakeTime, tracker->pollingPeriod);
+  }
 
 }
 

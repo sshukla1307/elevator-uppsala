@@ -29,6 +29,8 @@
 #define AT_FLOOR      GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_7)
 #define DOORS_CLOSED  GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_8)
 
+#define ABS(x)        ((x) > 0 ? (x) : (-x))
+
 static portTickType xLastWakeTime;
 
 static void check(u8 assertion, char *name) {
@@ -43,6 +45,9 @@ static void check(u8 assertion, char *name) {
 
 static void safetyTask(void *params) {
   s16 timeSinceStopPressed = -1;
+  u16 timeSpeedMeasure = 0;
+  s32 currentPosition = 0;
+  s32 oldPosition = 0;
 
   xLastWakeTime = xTaskGetTickCount();
 
@@ -54,8 +59,17 @@ static void safetyTask(void *params) {
 	check((AT_FLOOR && MOTOR_STOPPED) || DOORS_CLOSED,
 	      "env1");
 
-	// fill in environment assumption 2
-	check(1, "env2");
+	// Environment assumption 2: The elevator moves at a maximum speed of 50cm/s
+  //make the measurement every 60 ms ( max 3cm/60ms - keep the sampling point in the same place of the pulse)
+  timeSpeedMeasure++;
+  if(timeSpeedMeasure == 3)
+  {
+    currentPosition == getCarPosition();
+    check( ABS(currentPosition - oldPosition) < 3, "env2");
+    oldPosition = currentPosition;
+    timeSpeedMeasure = 0;
+  }
+  
 
 	// fill in environment assumption 3
 	check(1, "env3");
