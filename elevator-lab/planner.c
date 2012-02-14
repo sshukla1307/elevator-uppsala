@@ -19,6 +19,8 @@
 #include "assert.h"
 #include "semphr.h"
 
+#define FLOOR_TIMEOUT 10//100  // 1 second
+
 typedef enum {
 	UNKNOWN = 0,
 	FLOOR1 = 1,
@@ -43,17 +45,21 @@ static FloorEvent_t getFloorEvent(void);
 static void pushFloorEvent(FloorEvent_t floor);
 //checks if it is possible to stop at floor 2 on the way to floor 1 or 3
 static bool floor2InTheWay(void);
-static FloorEvent_t readFloorEvent(void);
+static FloorEvent_t readFloorEvent(FloorEvent_t ev);
 
 static void plannerTask(void *params) {
 
 	PinEvent ev;
 	FloorEvent_t targetfloor = FLOOR1, currentfloor = FLOOR1;
   bool floorreached = TRUE, doors_closed = FALSE;
-
+  Direction dir = Unknown;
+  static u32 timeout = 0;
+  
 	portTickType xLastWakeTime;
 	// Initialise the xLastWakeTime variable with the current time.
 	xLastWakeTime = xTaskGetTickCount();
+
+ 
 
 
 	for(;;) {    
@@ -112,7 +118,7 @@ static void plannerTask(void *params) {
     if( doors_closed )
     {
       // read new target floor
-      targetfloor = readFloorEvent();
+      targetfloor = readFloorEvent(targetfloor);
     
       // set target position accordingly
       switch(targetfloor)
@@ -133,11 +139,19 @@ static void plannerTask(void *params) {
     }
 
     // test if lift reached the target floor and pop the request from the queue
-    if(( floorreached && !doors_closed ) && ( targetfloor != currentfloor ))
+    if(( floorreached && ( !doors_closed || (timeout > FLOOR_TIMEOUT))) && ( targetfloor != currentfloor ))
     {
-       // set the new current floor
+       // set the new current floor and pop out the event from queue        
        currentfloor = getFloorEvent();
+
+       timeout = 0;
     }
+
+    dir = getCarDirection();
+    if(floorreached && doors_closed && ( dir == Unknown ))
+      timeout++;  // increment timer if floor is reached and doors are not oppened
+    else
+      timeout = 0;
 
 		vTaskDelayUntil(&xLastWakeTime, 10 / portTICK_RATE_MS);
 	}
@@ -155,14 +169,18 @@ void setupPlanner(unsigned portBASE_TYPE uxPriority) {
   xTaskCreate(plannerTask, "planner", 100, NULL, uxPriority, NULL);
 }
 
-FloorEvent_t readFloorEvent(void) {
+FloorEvent_t readFloorEvent(FloorEvent_t ev) {
 	FloorEvent_t floor;
 
 	//get the first element in the queue
-  if( floorQueue.floor[0] != UNKNOWN )
+  if( floorQueue.floor[0] != UNKNOWN ) {
 	  floor = floorQueue.floor[0];
-
-	return floor;
+    return floor;
+  }
+  else
+  {
+    return ev;
+  }
 }
 
 //pull a floor request event from the queue
