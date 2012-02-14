@@ -29,7 +29,7 @@
 #define AT_FLOOR      GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_7)
 #define DOORS_CLOSED  GPIO_ReadInputDataBit(GPIOC, GPIO_Pin_8)
 
-#define ABS(x)        ((x) > 0 ? (x) : (-x))
+#define ABS(x)        ((x) >= 0 ? (x) : (-x))
 
 static portTickType xLastWakeTime;
 
@@ -62,10 +62,10 @@ static void safetyTask(void *params) {
 	// Environment assumption 2: The elevator moves at a maximum speed of 50cm/s
   //make the measurement every 60 ms ( max 3cm/60ms - keep the sampling point in the same place of the pulse)
   timeSpeedMeasure++;
-  if(timeSpeedMeasure == 3)
+  if(timeSpeedMeasure == 6)
   {
     currentPosition == getCarPosition();
-    check( ABS(currentPosition - oldPosition) < 3, "env2");
+    check( ABS(currentPosition - oldPosition) <= 3, "env2");
     oldPosition = currentPosition;
     timeSpeedMeasure = 0;
   }

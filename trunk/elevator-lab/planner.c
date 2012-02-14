@@ -49,7 +49,7 @@ static void plannerTask(void *params) {
 
 	PinEvent ev;
 	FloorEvent_t targetfloor = FLOOR1, currentfloor = FLOOR1;
-  bool floorreached, doors_closed;
+  bool floorreached = TRUE, doors_closed = FALSE;
 
 	portTickType xLastWakeTime;
 	// Initialise the xLastWakeTime variable with the current time.
