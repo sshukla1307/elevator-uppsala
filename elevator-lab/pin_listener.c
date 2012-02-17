@@ -38,6 +38,10 @@ static void pollPin(PinListener *listener,
           debounce_cnt[listener->pin] = 0; //reset counter
           xQueueSend(pinEventQueue, &listener->risingEvent, portMAX_DELAY);
         }
+      else
+      {
+        debounce_cnt[listener->pin] = 0;
+      }
       break;
 
     case 1: // pressed
@@ -55,6 +59,10 @@ static void pollPin(PinListener *listener,
           if( listener->pin > 2 ) // ignore butons falling edge event
             xQueueSend(pinEventQueue, &listener->fallingEvent, portMAX_DELAY);
         }
+      }
+      else
+      {
+        debounce_cnt[listener->pin] = 0;
       }
       break;
 
