@@ -75,10 +75,6 @@ static void safetyTask(void *params) {
   // If the ground floor is put at 0cm in an absolute coordinate system, 
   // the second floor is at 400cm and 
   // the third floor at 800cm (the at-floor sensor reports a floor with a threshold of +-0.5cm)
-//  if(AT_FLOOR)
-//	check((( currentPosition == TRACKER_FLOOR1_POS ) || \
-//         ( currentPosition == TRACKER_FLOOR2_POS ) || \
-//         ( currentPosition == TRACKER_FLOOR3_POS )), "env3");
   if(AT_FLOOR)
   check (( currentPosition <= ( TRACKER_FLOOR1_POS + 1 )) ||  \
         (( currentPosition >= ( TRACKER_FLOOR2_POS - 1 )) && ( currentPosition <= ( TRACKER_FLOOR2_POS + 1 ))) || \
