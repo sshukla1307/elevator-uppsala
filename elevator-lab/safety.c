@@ -62,9 +62,9 @@ static void safetyTask(void *params) {
 	// Environment assumption 2: The elevator moves at a maximum speed of 50cm/s
   //make the measurement every 60 ms ( max 3cm/60ms - keep the sampling point in the same place of the pulse)
   timeSpeedMeasure++;
+  currentPosition = getCarPosition();
   if(timeSpeedMeasure == 6)
-  {
-    currentPosition == getCarPosition();
+  { 
     check( ABS(currentPosition - oldPosition) <= 3, "env2");
     oldPosition = currentPosition;
     timeSpeedMeasure = 0;
@@ -72,7 +72,17 @@ static void safetyTask(void *params) {
   
 
 	// fill in environment assumption 3
-	check(1, "env3");
+  // If the ground floor is put at 0cm in an absolute coordinate system, 
+  // the second floor is at 400cm and 
+  // the third floor at 800cm (the at-floor sensor reports a floor with a threshold of +-0.5cm)
+//  if(AT_FLOOR)
+//	check((( currentPosition == TRACKER_FLOOR1_POS ) || \
+//         ( currentPosition == TRACKER_FLOOR2_POS ) || \
+//         ( currentPosition == TRACKER_FLOOR3_POS )), "env3");
+  if(AT_FLOOR)
+  check (( currentPosition <= ( TRACKER_FLOOR1_POS + 1 )) ||  \
+        (( currentPosition >= ( TRACKER_FLOOR2_POS - 1 )) && ( currentPosition <= ( TRACKER_FLOOR2_POS + 1 ))) || \
+         ( currentPosition >= ( TRACKER_FLOOR3_POS - 1 )), "env3");
 
 	// fill in your own environment assumption 4
 	check(1, "env4");
