@@ -54,6 +54,7 @@ static void plannerTask(void *params) {
   bool floorreached = TRUE, doors_closed = FALSE;
   Direction dir = Unknown;
   static u32 timeout = 0;
+  static u8 tmp = 0;
   
 	portTickType xLastWakeTime;
 	// Initialise the xLastWakeTime variable with the current time.
@@ -105,7 +106,7 @@ static void plannerTask(void *params) {
 					break;
 
 				case STOP_RELEASED:
-            setCarMotorStopped(0);
+            //setCarMotorStopped(0);
 					break;
 
 				default:
@@ -115,43 +116,70 @@ static void plannerTask(void *params) {
 		}
 
     /* only set the target when doors are closed  */
-    if( doors_closed )
-    {
-      // read new target floor
-      targetfloor = readFloorEvent(targetfloor);
     
-      // set target position accordingly
-      switch(targetfloor)
-      {
-        case FLOOR1:
-          setCarTargetPosition(TRACKER_FLOOR1_POS);
-          break;
-        case FLOOR2:
-          setCarTargetPosition(TRACKER_FLOOR2_POS);
-          break;                                   
-        case FLOOR3:
-          setCarTargetPosition(TRACKER_FLOOR3_POS);
-          break;
-  
-        default:
-          break;
-      }
-    }
 
-    // test if lift reached the target floor and pop the request from the queue
-    if(( floorreached && ( !doors_closed || (timeout > FLOOR_TIMEOUT))) && ( targetfloor != currentfloor ))
+    dir = getCarDirection();                        
+    //if(floorreached && doors_closed && ( dir == Unknown ))
+    if(floorreached && ( dir == Unknown ) && (timeout < FLOOR_TIMEOUT))
     {
-       // set the new current floor and pop out the event from queue        
-       currentfloor = getFloorEvent();
+      timeout++;  // increment timer if floor is reached and doors are not oppened
+      tmp = 0;
 
-       timeout = 0;
+      // test if lift reached the target floor and pop the request from the queue
+      if( targetfloor != currentfloor ){
+         currentfloor = getFloorEvent();
+      }
+
+    }
+    else
+    {
+
+      if( doors_closed )
+      {
+        // read new target floor
+        targetfloor = readFloorEvent(targetfloor);
+      
+        // set target position accordingly
+        switch(targetfloor)
+        {
+          case FLOOR1:
+            setCarTargetPosition(TRACKER_FLOOR1_POS);
+            break;
+          case FLOOR2:
+            setCarTargetPosition(TRACKER_FLOOR2_POS);
+            break;                                   
+          case FLOOR3:
+            setCarTargetPosition(TRACKER_FLOOR3_POS);
+            break;
+    
+          default:
+            break;
+        }
+      }
+
+      // wait for the motor task to change the direction
+      if(tmp > 50 )
+        timeout = 0;
+      else
+        tmp++;
+        
+    
+//      // test if lift reached the target floor and pop the request from the queue
+//      if(( floorreached && ( dir == Unknown ) && ( !doors_closed || (timeout > FLOOR_TIMEOUT))) && ( targetfloor != currentfloor ))
+//      //if(( floorreached && ((timeout > FLOOR_TIMEOUT))) && ( targetfloor != currentfloor ))
+//      {
+//         // set the new current floor and pop out the event from queue        
+//         currentfloor = getFloorEvent();
+//  
+//         timeout = 0;
+//      }
+    
     }
 
-    dir = getCarDirection();
-    if(floorreached && doors_closed && ( dir == Unknown ))
-      timeout++;  // increment timer if floor is reached and doors are not oppened
-    else
-      timeout = 0;
+
+    
+
+   
 
 		vTaskDelayUntil(&xLastWakeTime, 10 / portTICK_RATE_MS);
 	}
