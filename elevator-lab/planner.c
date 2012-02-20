@@ -19,7 +19,6 @@
 #include "assert.h"
 #include "semphr.h"
 
-#define FLOOR_TIMEOUT 10//100  // 1 second
 
 typedef enum {
 	UNKNOWN = 0,
