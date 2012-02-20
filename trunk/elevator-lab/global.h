@@ -20,9 +20,9 @@
 #define TRACKER_FLOOR1_POS	0
 #define TRACKER_FLOOR2_POS	10 //400
 #define TRACKER_FLOOR3_POS	20 //800
-#define SAFE_STOP_DISTANCE	2 //100
+#define SAFE_STOP_DISTANCE	2 //50 //50 cm before target position
 
-#define FLOOR_TIMEOUT 10//100  // 1 second
+#define FLOOR_TIMEOUT 100  // 1 second
 
 
 /**
@@ -80,5 +80,11 @@ void setCarMotorStopped(u8 stopped);
 
 //returns the car's direction of movement (up, down, unknown)
 Direction getCarDirection(void);
+
+//returns the car's target position
+s32 getCarTargetPosition(void);
+
+//returns the next floor where the car should go from the planner
+s32 getPlannerTargetPosition(void);
 
 #endif

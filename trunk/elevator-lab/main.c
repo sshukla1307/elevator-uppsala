@@ -132,6 +132,10 @@ s32 getCarPosition() {
   return getPosition(&carPositionTracker);
 }
 
+s32 getCarTargetPosition(void) {
+  return getTargetPosition(&carMotor);
+}
+
 void setCarTargetPosition(s32 target) {
   setTargetPosition(&carMotor, target);
 }
@@ -142,6 +146,28 @@ void setCarMotorStopped(u8 stopped) {
 
 Direction getCarDirection() {
   return getDirection(&carPositionTracker);
+}
+
+s32 getPlannerTargetPosition() {
+  s32 plannerTargetPosition;
+	switch (readFloorEvent()){				
+
+		case FLOOR1:
+			plannerTargetPosition = TRACKER_FLOOR1_POS;
+			break;
+		case FLOOR2:
+			plannerTargetPosition = TRACKER_FLOOR2_POS;
+			break;
+		case FLOOR3:
+			plannerTargetPosition = TRACKER_FLOOR3_POS;
+			break;
+		default:
+			assert(0);
+			plannerTargetPosition = -1;
+			break;
+	}
+	
+	return plannerTargetPosition;
 }
 
 /*-----------------------------------------------------------*/

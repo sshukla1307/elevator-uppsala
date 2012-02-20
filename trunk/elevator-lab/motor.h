@@ -47,6 +47,7 @@ void setupMotor(Motor *motor,
 				unsigned portBASE_TYPE uxPriority);
 
 void setTargetPosition(Motor *motor, s32 target);
+s32 getTargetPosition(Motor *motor);
 
 // Stop motor immediately (usually due to safety reasons)
 void setMotorStopped(Motor *motor, u8 stopped);
