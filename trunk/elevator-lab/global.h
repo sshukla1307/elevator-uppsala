@@ -22,6 +22,8 @@
 #define TRACKER_FLOOR3_POS	20 //800
 #define SAFE_STOP_DISTANCE	2 //100
 
+#define FLOOR_TIMEOUT 10//100  // 1 second
+
 
 /**
  * Events that can occur during execution. Those events
