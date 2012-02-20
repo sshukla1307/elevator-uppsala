@@ -176,6 +176,12 @@ void setTargetPosition(Motor *motor, s32 target) {
   xSemaphoreGive(motor->lock);
 }
 
+s32 getTargetPosition(Motor *motor) {
+  xSemaphoreTake(motor->lock, portMAX_DELAY);
+  return motor->targetPosition;
+  xSemaphoreGive(motor->lock);
+}
+
 void setMotorStopped(Motor *motor, u8 stopped) {
   xSemaphoreTake(motor->lock, portMAX_DELAY);
   motor->stopped = stopped;

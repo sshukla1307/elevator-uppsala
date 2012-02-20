@@ -19,14 +19,6 @@
 #include "assert.h"
 #include "semphr.h"
 
-
-typedef enum {
-	UNKNOWN = 0,
-	FLOOR1 = 1,
-	FLOOR2 = 2,
-	FLOOR3 = 3
-} FloorEvent_t;
-
 typedef struct {
 	FloorEvent_t floor[3];	 //floor where car must go
 
@@ -38,18 +30,19 @@ extern xQueueHandle pinEventQueue;
 //structure holding floor request events
 floorEventQueue_t floorQueue;
 
+FloorEvent_t targetfloor = FLOOR1;
+
 //pull a floor request event from the queue
-static FloorEvent_t getFloorEvent(void);
+static FloorEvent_t popFloorEvent(void);
 //insert a floor request event into the queue
 static void pushFloorEvent(FloorEvent_t floor);
 //checks if it is possible to stop at floor 2 on the way to floor 1 or 3
 static bool floor2InTheWay(void);
-static FloorEvent_t readFloorEvent(FloorEvent_t ev);
 
 static void plannerTask(void *params) {
 
 	PinEvent ev;
-	FloorEvent_t targetfloor = FLOOR1, currentfloor = FLOOR1;
+	FloorEvent_t currentfloor = FLOOR1, tempTargetFloor;
   bool floorreached = TRUE, doors_closed = FALSE;
   Direction dir = Unknown;
   static u32 timeout = 0;
@@ -118,7 +111,6 @@ static void plannerTask(void *params) {
     
 
     dir = getCarDirection();                        
-    //if(floorreached && doors_closed && ( dir == Unknown ))
     if(floorreached && ( dir == Unknown ) && (timeout < FLOOR_TIMEOUT))
     {
       timeout++;  // increment timer if floor is reached and doors are not oppened
@@ -126,7 +118,7 @@ static void plannerTask(void *params) {
 
       // test if lift reached the target floor and pop the request from the queue
       if( targetfloor != currentfloor ){
-         currentfloor = getFloorEvent();
+         currentfloor = popFloorEvent();
       }
 
     }
@@ -136,7 +128,10 @@ static void plannerTask(void *params) {
       if( doors_closed )
       {
         // read new target floor
-        targetfloor = readFloorEvent(targetfloor);
+				tempTargetFloor = readFloorEvent(); 
+				if (tempTargetFloor != UNKNOWN) {
+        	targetfloor = tempTargetFloor;
+				}
       
         // set target position accordingly
         switch(targetfloor)
@@ -196,22 +191,21 @@ void setupPlanner(unsigned portBASE_TYPE uxPriority) {
   xTaskCreate(plannerTask, "planner", 100, NULL, uxPriority, NULL);
 }
 
-FloorEvent_t readFloorEvent(FloorEvent_t ev) {
-	FloorEvent_t floor;
-
-	//get the first element in the queue
+FloorEvent_t readFloorEvent(void) {
+	
   if( floorQueue.floor[0] != UNKNOWN ) {
-	  floor = floorQueue.floor[0];
-    return floor;
+		//return the first element in the queue
+    return floorQueue.floor[0];
   }
   else
   {
-    return ev;
+		//else return current floor
+    return targetfloor;
   }
 }
 
 //pull a floor request event from the queue
-FloorEvent_t getFloorEvent(void) {
+FloorEvent_t popFloorEvent(void) {
 	FloorEvent_t floor;
 
 	//get the first element in the queue

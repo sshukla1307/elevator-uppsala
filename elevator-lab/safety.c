@@ -49,6 +49,7 @@ static void safetyTask(void *params) {
   u32 timetowait = 0;
   s32 currentPosition = 0;
   s32 oldPosition = 0;
+	static bool floornew;
 
   xLastWakeTime = xTaskGetTickCount();
 
@@ -72,7 +73,7 @@ static void safetyTask(void *params) {
   }
   
 
-	// fill in environment assumption 3
+	// Environment assumption 3
   // If the ground floor is put at 0cm in an absolute coordinate system, 
   // the second floor is at 400cm and 
   // the third floor at 800cm (the at-floor sensor reports a floor with a threshold of +-0.5cm)
@@ -81,7 +82,7 @@ static void safetyTask(void *params) {
         (( currentPosition >= ( TRACKER_FLOOR2_POS - 1 )) && ( currentPosition <= ( TRACKER_FLOOR2_POS + 1 ))) || \
          ( currentPosition >= ( TRACKER_FLOOR3_POS - 1 )), "env3");
 
-	// fill in your own environment assumption 4
+	// Environment assumption 4: The values of the inputs stabilize on 0 or 1 within at most 20 ms and are kept for more than 20 ms (for button debouncing to work)
 	check(1, "env4");
 
     // System requirement 1: if the stop button is pressed, the motor is
@@ -105,25 +106,39 @@ static void safetyTask(void *params) {
     check(!MOTOR_UPWARD || !MOTOR_DOWNWARD,
           "req2");
 
-	// fill in safety requirement 3: 
-	check(1, "req3");
+	// Safety requirement 3: The elevator may not pass the end positions, that is, go through the roof or the floor 
+	check((currentPosition >= TRACKER_FLOOR1_POS) && (currentPosition <= TRACKER_FLOOR3_POS), "req3");
 
-	// fill in safety requirement 4 A moving elevator halts only if the stop button is pressed or the elevator has arrived at a floor
+	// Safety requirement 4: A moving elevator halts only if the stop button is pressed or the elevator has arrived at a floor
 	check(( AT_FLOOR || STOP_PRESSED ) || !MOTOR_STOPPED, "req4");
 
-	// fill in safety requirement 5
+	// Safety requirement 5: Once the elevator has stopped at a floor, it will wait for at least 1s before it continues to another floor
 	check((( timetowait > FLOOR_TIMEOUT ) && !MOTOR_STOPPED) || MOTOR_STOPPED, "req5");
-  if(MOTOR_STOPPED)
-    timetowait++;
-  else
-    timetowait = 0;
-  printf("%d", timetowait);
 
-	// fill in safety requirement 6
+  if(MOTOR_STOPPED){
+		if(floornew == TRUE){
+			timetowait = 0;
+			floornew = FALSE;
+		}
+    if (timetowait <= FLOOR_TIMEOUT) {
+			timetowait++;
+		}
+	} else {
+    floornew = TRUE;
+	}
+
+  
+
+	// Safety requirement 6: The elevator will not move while the doors are open
+	// This requirement is covered by the implementation of  Environment assumption 1
 	check(1, "req6");
 
-	// fill in safety requirement 7
+	// Safety requirement 7: The maximum accelleration/decelleration of the elevator is 100 cm / s2
 	check(1, "req7");
+
+
+	// Safety requirement 8: The elevator moves only when it is called/ordered to go to a floor
+	check(MOTOR_STOPPED || (getPlannerTargetPosition() == getCarTargetPosition()), "req8");
 
 	vTaskDelayUntil(&xLastWakeTime, POLL_TIME);
   }
