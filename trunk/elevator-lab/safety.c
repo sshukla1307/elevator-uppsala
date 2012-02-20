@@ -19,7 +19,11 @@
 #include "global.h"
 #include "assert.h"
 
+#define CAR_SPEED_SAMPLING_INTERVAL 60 / portTICK_RATE_MS	/ POLL_TIME
+#define CAR_STOP_PERIOD 1000 / portTICK_RATE_MS / POLL_TIME
+
 #define POLL_TIME (10 / portTICK_RATE_MS)
+
 
 #define MOTOR_UPWARD   (TIM3->CCR1)
 #define MOTOR_DOWNWARD (TIM3->CCR2)
@@ -63,9 +67,15 @@ static void safetyTask(void *params) {
 
 	// Environment assumption 2: The elevator moves at a maximum speed of 50cm/s
   //make the measurement every 60 ms ( max 3cm/60ms - keep the sampling point in the same place of the pulse)
-  timeSpeedMeasure++;
+
   currentPosition = getCarPosition();
-  if(timeSpeedMeasure == 6)
+
+  //limit against overflow
+	if (timeSpeedMeasure <= CAR_SPEED_SAMPLING_INTERVAL) {
+		timeSpeedMeasure++;
+	}
+
+  if(timeSpeedMeasure == CAR_SPEED_SAMPLING_INTERVAL)
   { 
     check( ABS(currentPosition - oldPosition) <= 3, "env2");
     oldPosition = currentPosition;
@@ -91,11 +101,12 @@ static void safetyTask(void *params) {
 	if (STOP_PRESSED) {
 	  if (timeSinceStopPressed < 0)
 	    timeSinceStopPressed = 0;
-      else
-	    timeSinceStopPressed += POLL_TIME;
-
-      check(timeSinceStopPressed * portTICK_RATE_MS <= 1000 || MOTOR_STOPPED,
-	        "req1");
+      else {
+				if (timeSinceStopPressed < CAR_STOP_PERIOD) {
+					timeSinceStopPressed++;
+				}
+    		check(timeSinceStopPressed <= CAR_STOP_PERIOD || MOTOR_STOPPED,	"req1");
+			}
 	} else {
 	  timeSinceStopPressed = -1;
 	}
@@ -110,7 +121,7 @@ static void safetyTask(void *params) {
 	check((currentPosition >= TRACKER_FLOOR1_POS) && (currentPosition <= TRACKER_FLOOR3_POS), "req3");
 
 	// Safety requirement 4: A moving elevator halts only if the stop button is pressed or the elevator has arrived at a floor
-	check(( AT_FLOOR || STOP_PRESSED ) || !MOTOR_STOPPED, "req4");
+	check(AT_FLOOR || STOP_PRESSED || !MOTOR_STOPPED, "req4");
 
 	// Safety requirement 5: Once the elevator has stopped at a floor, it will wait for at least 1s before it continues to another floor
 	check((( timetowait > FLOOR_TIMEOUT ) && !MOTOR_STOPPED) || MOTOR_STOPPED, "req5");
@@ -120,7 +131,8 @@ static void safetyTask(void *params) {
 			timetowait = 0;
 			floornew = FALSE;
 		}
-    if (timetowait <= FLOOR_TIMEOUT) {
+		//limit against overflow
+    if (timetowait <= FLOOR_TIMEOUT + 1) {
 			timetowait++;
 		}
 	} else {
