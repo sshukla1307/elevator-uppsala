@@ -183,6 +183,7 @@ static void plannerTask(void *params) {
 void setupPlanner(unsigned portBASE_TYPE uxPriority) {
 	u8 i;
 
+	floorQueue.lock = xSemaphoreCreateMutex();
 	//init floorQueue
 	for (i=0;i<3;i++) {
 		floorQueue.floor[i] = UNKNOWN;
@@ -192,8 +193,13 @@ void setupPlanner(unsigned portBASE_TYPE uxPriority) {
 }
 
 FloorEvent_t readFloorEvent(void) {
-	
-  if( floorQueue.floor[0] != UNKNOWN ) {
+	FloorEvent_t floor;
+		
+	xSemaphoreTake(floorQueue.lock, portMAX_DELAY);
+ 	floor = floorQueue.floor[0];
+	xSemaphoreGive(floorQueue.lock);
+
+  if( floor != UNKNOWN ) {
 		//return the first element in the queue
     return floorQueue.floor[0];
   }
@@ -208,12 +214,16 @@ FloorEvent_t readFloorEvent(void) {
 FloorEvent_t popFloorEvent(void) {
 	FloorEvent_t floor;
 
+	xSemaphoreTake(floorQueue.lock, portMAX_DELAY);
+
 	//get the first element in the queue
 	floor = floorQueue.floor[0];
 	//shift queue to the left by 1 position
 	floorQueue.floor[0] = floorQueue.floor[1];
 	floorQueue.floor[1] = floorQueue.floor[2];
   floorQueue.floor[2] = UNKNOWN;
+
+	xSemaphoreGive(floorQueue.lock);
 
 	return floor;
 }
@@ -223,9 +233,12 @@ void pushFloorEvent(FloorEvent_t floor) {
 	u8 i;
   Direction dir = getCarDirection();
 	
+	xSemaphoreTake(floorQueue.lock, portMAX_DELAY);
+
 	//if the event is already in the queue we don't need to push it again
 	for (i=0;i<3;i++) {
 		if (floorQueue.floor[i] == floor) {
+			xSemaphoreGive(floorQueue.lock);
 			return;
 		}
 	}	
@@ -249,6 +262,7 @@ void pushFloorEvent(FloorEvent_t floor) {
 			}	
 		}
 	}
+	xSemaphoreGive(floorQueue.lock);
 }
 
 bool floor2InTheWay() {
