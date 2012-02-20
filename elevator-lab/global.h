@@ -18,9 +18,9 @@
 #include "position_tracker.h"
 
 #define TRACKER_FLOOR1_POS	0
-#define TRACKER_FLOOR2_POS	10 //400
-#define TRACKER_FLOOR3_POS	20 //800
-#define SAFE_STOP_DISTANCE	2 //50 //50 cm before target position
+#define TRACKER_FLOOR2_POS	400
+#define TRACKER_FLOOR3_POS	800
+#define SAFE_STOP_DISTANCE	50 //50 cm before target position
 
 #define FLOOR_TIMEOUT 100  // 1 second
 
@@ -86,5 +86,8 @@ s32 getCarTargetPosition(void);
 
 //returns the next floor where the car should go from the planner
 s32 getPlannerTargetPosition(void);
+
+//checks if the GPIO inputs (except the postion) satisfy Safety env4 condition
+bool checkInputsStabilized(void);
 
 #endif

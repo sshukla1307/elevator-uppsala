@@ -148,8 +148,22 @@ Direction getCarDirection() {
   return getDirection(&carPositionTracker);
 }
 
+bool checkInputsStabilized() {
+	u8 i;
+
+
+	for (i = 0; i < listenerSet.num; i++)	{
+		if ((listenerSet.listeners + i)->status == 2) {
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+}
+
 s32 getPlannerTargetPosition() {
   s32 plannerTargetPosition;
+
 	switch (readFloorEvent()){				
 
 		case FLOOR1:

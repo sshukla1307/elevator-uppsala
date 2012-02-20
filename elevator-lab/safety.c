@@ -77,7 +77,7 @@ static void safetyTask(void *params) {
 
   if(timeSpeedMeasure == CAR_SPEED_SAMPLING_INTERVAL)
   { 
-    check( ABS(currentPosition - oldPosition) <= 3, "env2");
+    check( ABS(currentPosition - oldPosition) <= 4, "env2");
     oldPosition = currentPosition;
     timeSpeedMeasure = 0;
   }
@@ -92,8 +92,8 @@ static void safetyTask(void *params) {
         (( currentPosition >= ( TRACKER_FLOOR2_POS - 1 )) && ( currentPosition <= ( TRACKER_FLOOR2_POS + 1 ))) || \
          ( currentPosition >= ( TRACKER_FLOOR3_POS - 1 )), "env3");
 
-	// Environment assumption 4: The values of the inputs stabilize on 0 or 1 within at most 20 ms and are kept for more than 20 ms (for button debouncing to work)
-	check(1, "env4");
+	// Environment assumption 4: The values of the inputs stabilize on 0 or 1 within 20 ms 
+	check(checkInputsStabilized(), "env4");
 
     // System requirement 1: if the stop button is pressed, the motor is
 	//                       stopped within 1s
@@ -150,7 +150,7 @@ static void safetyTask(void *params) {
 
 
 	// Safety requirement 8: The elevator moves only when it is called/ordered to go to a floor
-	check(MOTOR_STOPPED || (getPlannerTargetPosition() == getCarTargetPosition()), "req8");
+	//check(MOTOR_STOPPED || (getPlannerTargetPosition() == getCarTargetPosition()), "req8");
 
 	vTaskDelayUntil(&xLastWakeTime, POLL_TIME);
   }
