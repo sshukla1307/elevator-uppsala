@@ -46,6 +46,7 @@ static void check(u8 assertion, char *name) {
 static void safetyTask(void *params) {
   s16 timeSinceStopPressed = -1;
   u16 timeSpeedMeasure = 0;
+  u32 timetowait = 0;
   s32 currentPosition = 0;
   s32 oldPosition = 0;
 
@@ -104,14 +105,19 @@ static void safetyTask(void *params) {
     check(!MOTOR_UPWARD || !MOTOR_DOWNWARD,
           "req2");
 
-	// fill in safety requirement 3
+	// fill in safety requirement 3: 
 	check(1, "req3");
 
-	// fill in safety requirement 4
-	check(1, "req4");
+	// fill in safety requirement 4 A moving elevator halts only if the stop button is pressed or the elevator has arrived at a floor
+	check(( AT_FLOOR || STOP_PRESSED ) || !MOTOR_STOPPED, "req4");
 
 	// fill in safety requirement 5
-	check(1, "req5");
+	check((( timetowait > FLOOR_TIMEOUT ) && !MOTOR_STOPPED) || MOTOR_STOPPED, "req5");
+  if(MOTOR_STOPPED)
+    timetowait++;
+  else
+    timetowait = 0;
+  printf("%d", timetowait);
 
 	// fill in safety requirement 6
 	check(1, "req6");
