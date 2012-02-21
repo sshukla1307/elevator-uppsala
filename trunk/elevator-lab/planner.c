@@ -58,22 +58,22 @@ static void plannerTask(void *params) {
 	for(;;) {    
 
     // check event queue for new event
-		if(xQueueReceive(pinEventQueue, &ev, (portTickType)0 ) == pdTRUE) {
+		while (xQueueReceive(pinEventQueue, &ev, (portTickType)0 ) == pdTRUE) {
 			switch(ev) {
 
 				case TO_FLOOR_1:
           // check current floor
-          if( currentfloor != FLOOR1) 
+          if(targetfloor != FLOOR1) 
 					  pushFloorEvent(FLOOR1);    // set the floor request only if it isn't the current floor
 					break;	
 
 				case TO_FLOOR_2:
-          if( currentfloor != FLOOR2)
+          if(targetfloor != FLOOR2)
   					pushFloorEvent(FLOOR2);    // set the floor request only if it isn't the current floor
 					break;
 
 				case TO_FLOOR_3:
-          if( currentfloor != FLOOR3)
+          if(targetfloor != FLOOR3)
 					  pushFloorEvent(FLOOR3);    // set the floor request only if it isn't the current floor
           break;					 
 				
@@ -244,24 +244,27 @@ void pushFloorEvent(FloorEvent_t floor) {
 	}	
 	
 	//if the requested floor is the middle one and lift is mooving
-	if ((floor == FLOOR2) && ( dir != Unknown))  {
+	if (floor == FLOOR2)  {
 		//if it is possible to stop on the way
 		if (floor2InTheWay()) {
 			//stop to the floor - insert floor at the beginning of 	queue
 			floorQueue.floor[2] = floorQueue.floor[1];
 			floorQueue.floor[1] = floorQueue.floor[0];
 			floorQueue.floor[0] = floor;
+			xSemaphoreGive(floorQueue.lock);
+			return;
 		}
-	} else {
-		//insert floor at the end of the queue
-		//queue doesn't need to be sorted since we only have 3 floors 
-		for (i=0;i<3;i++) {
-			if (floorQueue.floor[i] == UNKNOWN) {
-				floorQueue.floor[i] = floor;
-				break;	
-			}	
-		}
+	} 
+	
+	//insert floor at the end of the queue
+	//queue doesn't need to be sorted since we only have 3 floors 
+	for (i=0;i<3;i++) {
+		if (floorQueue.floor[i] == UNKNOWN) {
+			floorQueue.floor[i] = floor;
+			break;	
+		}	
 	}
+
 	xSemaphoreGive(floorQueue.lock);
 }
 
