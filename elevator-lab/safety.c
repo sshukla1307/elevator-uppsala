@@ -19,8 +19,8 @@
 #include "global.h"
 #include "assert.h"
 
-#define CAR_SPEED_SAMPLING_INTERVAL 60 / portTICK_RATE_MS	/ POLL_TIME
-#define CAR_STOP_PERIOD 1000 / portTICK_RATE_MS / POLL_TIME
+#define CAR_SPEED_SAMPLING_INTERVAL (60 / portTICK_RATE_MS	/ POLL_TIME)
+#define CAR_STOP_PERIOD (1000 / portTICK_RATE_MS / POLL_TIME)
 
 #define POLL_TIME (10 / portTICK_RATE_MS)
 
@@ -105,7 +105,7 @@ static void safetyTask(void *params) {
 				if (timeSinceStopPressed < CAR_STOP_PERIOD) {
 					timeSinceStopPressed++;
 				}
-    		check(timeSinceStopPressed <= CAR_STOP_PERIOD || MOTOR_STOPPED,	"req1");
+    		check((timeSinceStopPressed <= CAR_STOP_PERIOD) || MOTOR_STOPPED,	"req1");
 			}
 	} else {
 	  timeSinceStopPressed = -1;
@@ -150,7 +150,7 @@ static void safetyTask(void *params) {
 
 
 	// Safety requirement 8: The elevator moves only when it is called/ordered to go to a floor
-	//check(MOTOR_STOPPED || (getPlannerTargetPosition() == getCarTargetPosition()), "req8");
+	check(MOTOR_STOPPED || (getPlannerTargetPosition() == getCarTargetPosition()), "req8");
 
 	vTaskDelayUntil(&xLastWakeTime, POLL_TIME);
   }
