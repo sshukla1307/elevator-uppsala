@@ -37,8 +37,10 @@
 
 static portTickType xLastWakeTime;
 
+
 static void check(u8 assertion, char *name) {
-  if (!assertion) {
+  if (!assertion) {		
+
     printf("SAFETY REQUIREMENT %s VIOLATED: STOPPING ELEVATOR\n", name);
     for (;;) {
 	  setCarMotorStopped(1);
@@ -54,6 +56,9 @@ static void safetyTask(void *params) {
   s32 currentPosition = 0;
   s32 oldPosition = 0;
 	static bool floornew;
+	static bool old_MOTOR_STOPPED = TRUE;
+	static bool old_STOP_PRESSED = FALSE;
+	
 
   xLastWakeTime = xTaskGetTickCount();
 
@@ -120,8 +125,13 @@ static void safetyTask(void *params) {
 	// Safety requirement 3: The elevator may not pass the end positions, that is, go through the roof or the floor 
 	check((currentPosition >= TRACKER_FLOOR1_POS) && (currentPosition <= TRACKER_FLOOR3_POS), "req3");
 
+	old_STOP_PRESSED |= (bool) STOP_PRESSED;
+
 	// Safety requirement 4: A moving elevator halts only if the stop button is pressed or the elevator has arrived at a floor
-	check(AT_FLOOR || STOP_PRESSED || !MOTOR_STOPPED, "req4");
+	check(old_MOTOR_STOPPED || (AT_FLOOR || old_STOP_PRESSED || !MOTOR_STOPPED), "req4");
+
+	old_MOTOR_STOPPED =	(bool) MOTOR_STOPPED;
+	
 
 	// Safety requirement 5: Once the elevator has stopped at a floor, it will wait for at least 1s before it continues to another floor
 	check((( timetowait > FLOOR_TIMEOUT ) && !MOTOR_STOPPED) || MOTOR_STOPPED, "req5");
