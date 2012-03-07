@@ -102,7 +102,7 @@ static void motorTask(void *params) {
 	    currentDuty += maxDutyChange;
       else
 	    currentDuty = 0;
-      setDuty(motor, currentDuty);
+    setDuty(motor, currentDuty);
 
 	} else if (targetPos > pos) {
 	  // We have to increase the position to reach the target
