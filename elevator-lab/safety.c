@@ -134,7 +134,8 @@ static void safetyTask(void *params) {
 	
 
 	// Safety requirement 5: Once the elevator has stopped at a floor, it will wait for at least 1s before it continues to another floor
-	check((( timetowait > FLOOR_TIMEOUT ) && !MOTOR_STOPPED) || MOTOR_STOPPED, "req5");
+	//check((( timetowait > FLOOR_TIMEOUT ) && !MOTOR_STOPPED) || MOTOR_STOPPED, "req5");
+  check((( timetowait > FLOOR_TIMEOUT ) && !MOTOR_STOPPED) || AT_FLOOR, "req5");
 
   if(MOTOR_STOPPED){
 		if(floornew == TRUE){
