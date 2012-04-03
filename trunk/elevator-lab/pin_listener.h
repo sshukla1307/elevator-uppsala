@@ -17,6 +17,12 @@
 
 #include "global.h"
 
+#define RELEASED									0
+#define BOUNCED_RELEASED					10
+#define PRESSED										100
+#define BOUNCED_PRESSED						110
+#define INPUT_UNSTABLE						250
+
 typedef struct {
   GPIO_TypeDef * gpio;		  // Pin to listener at, e.g., GPIOC,
   u16 pin;               	  // GPIO_Pin_4

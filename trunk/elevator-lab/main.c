@@ -153,7 +153,7 @@ bool checkInputsStabilized() {
 
 
 	for (i = 0; i < listenerSet.num; i++)	{
-		if ((listenerSet.listeners + i)->status == 2) {
+		if ((listenerSet.listeners + i)->status == INPUT_UNSTABLE) {
 			return FALSE;
 		}
 	}

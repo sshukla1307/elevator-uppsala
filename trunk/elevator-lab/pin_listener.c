@@ -15,103 +15,122 @@
 #include "pin_listener.h"
 #include "assert.h"
 
+#define GPIO_CALL_BUTTON 	(GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2)
 
 static void pollPin(PinListener *listener,
                     xQueueHandle pinEventQueue) {
 
-  static u8 debounce_cnt[6];
-
-  u8 data, index;
-
+  u8 data;
 
   //read GPIO Pin every 10 ms
   data = GPIO_ReadInputDataBit( listener->gpio, listener->pin );
 
-	//map GPIO pins to indexes for the arrays
-	switch (listener->pin) {
-		case GPIO_Pin_0:
-			index = 0;
-			break;
-		case GPIO_Pin_1:
-			index = 1;
-			break;
-		case GPIO_Pin_2:
-			index = 2;
-			break;
-		case GPIO_Pin_3:
-			index = 3;
-			break;
-		case GPIO_Pin_7:
-			index = 4;
-			break;
-		case GPIO_Pin_8:
-			index = 5;
-			break;
-		default:
-			break;
-	} 
-  
-  switch (listener->status) {
-    case 0: // released
-      if( data == 1 ) {
-
-        if( debounce_cnt[index] < 2 ) 
-        {
-          debounce_cnt[index]++;
-        }
-        else
-        {
-          listener->status = 1;  //go to pressed state
-          debounce_cnt[index] = 0; //reset counter
-          xQueueSend(pinEventQueue, &listener->risingEvent, portMAX_DELAY);
-        }
-			}
-      else
-      {
-				
-        if (debounce_cnt[index] > 2) {
-					//Violation of safety env 4
-					listener->status = 2;
-				}	
-				debounce_cnt[index] = 0;
-      }
-      break;
-
-    case 1: // pressed
-      if ( data == 0 )
-      {
-
-        if( debounce_cnt[index] < 2 ) 
-        {
-          debounce_cnt[index]++;
-        }
-        else
-        {
-					
-          listener->status = 0;  //go to pressed state
-          debounce_cnt[index] = 0; //reset counter
-          if( listener->pin > 2 ) // ignore falling edge event for the inputs from buttons
-            xQueueSend(pinEventQueue, &listener->fallingEvent, portMAX_DELAY);
-        }
-      }
-      else
-      {
-				
-        if (debounce_cnt[index] > 2) {
-					//Violation of safety env 4
-					listener->status = 2;
+	if (listener->pin & GPIO_CALL_BUTTON)	{
+	  switch (listener->status) {
+	    case RELEASED: // released
+	      if( data == 1 ) {
+					listener->status++;        
 				}
-				debounce_cnt[index] = 0;
-      }
-      break;
-		//input behaved incorrectly - will be noticed by the Safety module
-		case 2:
-			//do nothing
-			break;
-    default:
-      break;
-
-  }
+	      break;
+	    case (RELEASED + 1): // first down
+	      if( data == 1 ) {
+					listener->status++;        
+				}	else {
+					listener->status = BOUNCED_RELEASED;	 //bounced while released
+				}
+	      break;
+	    case (RELEASED + 2): // second down
+	      if( data == 1 ) {
+					listener->status = PRESSED; //pressed
+					xQueueSend(pinEventQueue, &listener->risingEvent, portMAX_DELAY);        
+				}	else {
+					listener->status = INPUT_UNSTABLE; //env 4 violated
+				}
+	      break;
+	    case BOUNCED_RELEASED: // bounced while released first down
+	      if( data == 1 ) {
+					listener->status++;         
+				}	else {
+					listener->status = INPUT_UNSTABLE; //env 4 violated
+				}
+	      break;
+	    case (BOUNCED_RELEASED + 1): // bounced while released second down
+	      if( data == 1 ) {
+					listener->status = PRESSED; //pressed
+					xQueueSend(pinEventQueue, &listener->risingEvent, portMAX_DELAY);        
+				}	else {
+					listener->status = INPUT_UNSTABLE; //env 4 violated
+				}
+	      break;	
+	
+	    case PRESSED: // pressed
+	      if( data == 0 ) {
+					listener->status++;        
+				}
+	      break;
+	    case (PRESSED + 1): // first up
+	      if( data == 0 ) {
+					listener->status++;        
+				}	else {
+					listener->status = BOUNCED_PRESSED;	 //debounced while pressed
+				}
+	      break;
+	    case (PRESSED + 2): // second up
+	      if( data == 0 ) {
+					listener->status = RELEASED; //released
+					if (!(listener->pin & GPIO_CALL_BUTTON))	{// ignore falling edge event for the inputs from buttons
+						xQueueSend(pinEventQueue, &listener->fallingEvent, portMAX_DELAY); 
+					}         
+				}	else {
+					listener->status = INPUT_UNSTABLE; //env 4 violated
+				}
+	      break;
+	    case BOUNCED_PRESSED: // bounced while pressed first up
+	      if( data == 0 ) {
+					listener->status++;         
+				}	else {
+					listener->status = INPUT_UNSTABLE; //env 4 violated
+				}
+	      break;
+	    case (BOUNCED_PRESSED + 1): // bounced while pressed second up
+	      if( data == 0 ) {
+					listener->status = RELEASED; //released
+					if (!(listener->pin & GPIO_CALL_BUTTON))	{// ignore falling edge event for the inputs from buttons
+						xQueueSend(pinEventQueue, &listener->fallingEvent, portMAX_DELAY); 
+					}        
+				}	else {
+					listener->status = INPUT_UNSTABLE; //env 4 violated
+				}
+	      break;		
+	
+			case INPUT_UNSTABLE: //input behaved incorrectly - will be noticed by the Safety module
+				//do nothing
+				break;
+	
+	    default:
+	      break;
+	
+	  }
+	} else {
+		switch (listener->status) {
+	    case (RELEASED): 
+	      if( data == 1 ) {	//rising edge
+					listener->status = PRESSED; //pressed
+					xQueueSend(pinEventQueue, &listener->risingEvent, portMAX_DELAY);        
+				}
+	      break;
+	    case (PRESSED): 
+	      if( data == 0 ) {	//falling edge
+					listener->status = RELEASED; //released
+					if (!(listener->pin & GPIO_CALL_BUTTON))	{// ignore falling edge event for the inputs from buttons
+						xQueueSend(pinEventQueue, &listener->fallingEvent, portMAX_DELAY); 
+					}       
+				}
+	      break;			
+		default:
+	      break;
+		}
+	}
 
 }
 
