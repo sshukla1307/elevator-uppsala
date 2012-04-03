@@ -16,6 +16,7 @@
 #include "assert.h"
 
 #define GPIO_CALL_BUTTON 	(GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2)
+#define GPIO_STOP_BUTTON 	GPIO_Pin_3
 
 static void pollPin(PinListener *listener,
                     xQueueHandle pinEventQueue) {
@@ -25,8 +26,9 @@ static void pollPin(PinListener *listener,
   //read GPIO Pin every 10 ms
   data = GPIO_ReadInputDataBit( listener->gpio, listener->pin );
 
-	if (listener->pin & GPIO_CALL_BUTTON)	{
-	  switch (listener->status) {
+	if (listener->pin & (GPIO_CALL_BUTTON | GPIO_STOP_BUTTON))	{
+	  //debounce only for buttons
+		switch (listener->status) {
 	    case RELEASED: // released
 	      if( data == 1 ) {
 					listener->status++;        
